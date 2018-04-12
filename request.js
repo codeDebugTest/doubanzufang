@@ -10,38 +10,43 @@ const homePage = {
 
 const CurrentYear = (new Date()).getFullYear();
 
-const getTitleInfo = (dom) => {
-    const aTag = dom.last();
+const getID = (url) => {
+    // f.s: https://www.douban.com/people/159176019/
+    const splited = url.split('/');
+    return splited[splited.length -2];
+}
+const getTitleInfo = ($, dom) => {
+    const url = $(dom).find('a').attr('href');
+
     return {
-        title: aTag.attr('title'),
-        url: aTag.attr('href')
+        title: $(dom).find('a').attr('title'),
+        url: url,
+        id: getID(url)
     }
 }
-const getPublisher = (dom) => {
-    const aTag = dom.first();
-    const uriInfo = aTag.attr('herf').split('/');
+const getPublisher = ($, dom) => {
+    const url = $(dom).find('a').attr('href')
+
     return {
-        publisherName: aTag.text(),
-        publisherId: uriInfo[uriInfo.length -2]
+        name: $(dom).find('a').text(),
+        id: getID(url),
     }
 }
-const exchangToJsObject = ($, domObj) => {
-    const  house = {};
-    $(domObj).find('td').map(function(i, e) {
+const exchangToJsObject = ($, dom) => {
+    const  topic = {};
+    $(dom).find('td').map(function(i, e) {
         if (i == 0) {
-            house['title'] = $(this).find('a').attr('title');
-            house['url'] = $(this).find('a').attr('href');
+            const titleInfo = getTitleInfo($, this);
+            Object.assign(topic, titleInfo);
         } else if (i == 1) {
-            house['publisherName'] = $(this).find('a').text();
-            const uriInfo = $(this).find('a').attr('href').split('/');
-            house['publisherId'] = uriInfo[uriInfo.length -2];
+            topic['publisher'] = getPublisher($, this);
         } else if (i == 2) {
-            house['responseAmount'] = $(this).html();
+            topic['responseAmount'] = $(this).html();
         } else if (i == 3) {
-            house['lastResponseTime'] = CurrentYear + '-' + $(this).html();
+            topic['lastResponseTime'] = CurrentYear + '-' + $(this).html();
         }
     });
-    return house;
+    return topic;
 }
 
 const parseHtml = (html) => {
