@@ -3,7 +3,7 @@ const cheerio = require('cheerio');
 const CurrentYear = (new Date()).getFullYear();
 
 const getID = (url) => {
-    // f.s: https://www.douban.com/people/159176019/
+    // e.g: https://www.douban.com/people/159176019/
     const splited = url.split('/');
     return splited[splited.length -2];
 }
