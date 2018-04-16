@@ -48,6 +48,21 @@ const selectAllHouse = () => {
     })
 }  
 
+const selectAllHouseId = async () => {
+    try {
+        const client = await MongoClient.connect(DB_URL);
+        console.log("Connected correctly to server");
+
+        const collection = client.db(DB_NAME).collection("house_topic");
+        let result = collection.find({}).project({id:1}).toArray();
+
+        client.close();   
+        return result;     
+    } catch (err) {
+        throw new Error(err);
+    };
+}
 
 
 exports.insertHouse = insertHouse;
+exports.selectAllHouseId = selectAllHouseId;
